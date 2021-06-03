@@ -2,29 +2,52 @@ version: "3.0"
 services:
 
   wow-3.3.5a:
-    image: vulcan/wow:3.3.5a
+    container_name: wow-3.3.5a-wow-server
+    depends_on:
+      - wow-sql
+    # image: vulcan/wow:3.3.5a
+    # image: vulcan/wow:3.3.5-26cc8e1e20
+    # image: vulcan/wow:3.3.5-52333b0e31
+    # image: vulcan/wow:3.3.5-52333b0e31
+    image: vulcan/wow:3.3.5-latest
+    restart: always
     ports:
       - 3724:3724/tcp
       - 8085:8085/tcp
     volumes:
-      - wow-3.3.5a-logs:/opt/wow/server/bin/logs
+      - wow-3.3.5a-logs:/opt/wow/server/log
       - wow-3.3.5a-config:/opt/wow/conf
     networks:
       - frontend
       - backend
     #command: bash -c "sleep 10 && /opt/wow/server/bin/start_server.sh"
 
-  wow-3.3.5a-sql:
-    image: mysql:5.7
+  wow-sql:
+    container_name: wow-3.3.5a-wow-sql
+    #image: mysql:5
+    image: mariadb:10.3
+    restart: always
     ports:
       - 3356:3306/tcp
     volumes:
       - wow-sql-data-3.3.5a:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example2
     networks:
       - frontend
       - backend
 
-volumes: 
+  wow-adminer:
+    container_name: wow-3.3.5a-wow-adminer
+    image: adminer:4.8.0
+    restart: always
+    ports:
+      - 8080:8080/tcp
+    networks:
+      - frontend
+      - backend
+
+volumes:
   wow-3.3.5a-logs:
   wow-3.3.5a-config:
   wow-sql-data-3.3.5a:
