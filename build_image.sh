@@ -11,7 +11,13 @@ export VERSION="0.1.0"
 # $3 - The docker tag that will be associated with this image
 #
 build_image() {
+    echo "building with following arguments:"
+    echo "git branch: $2"
+    echo "git commit: $3"
+    echo "docker tag: $1"
     docker build \
+        --build-arg GIT_BRANCH=$2 \
+        --build-arg GIT_COMMIT=$3 \
         -t vulcan/wow:$1 .
 }
 
@@ -34,24 +40,27 @@ get_commit_sha() {
 # ==============================================================================
 
 GIT_REPO=git://github.com/TrinityCore/TrinityCore.git
-# $1 - The git tag that we are attempting to build (branch)
-git_tag=$1
+# $1 - The git branch that we are attempting to build
+git_branch=$1
+
+tag_name=${git_branch}
+if [ "${git_branch}" == "master" ]; then
+    tag_name=9.0.5
+fi
 
 # get the version of our current tag that is building
-version=$(get_commit_sha ${GIT_REPO} ${git_tag})
+git_commit=$(get_commit_sha ${GIT_REPO} ${git_branch})
 
-echo Building ${git_tag}::${version}...
-
-# generate our docker tag (latest)
-docker_tag="${git_tag}-latest"
-## build the image
-#build_image $GIT_REPO $git_tag $docker_tag
-build_image $docker_tag
+echo Building ${git_branch}::${git_commit}...
 
 # generate our docker tag (version)
-docker_tag="${git_tag}-${version}"
+docker_tag="${tag_name}-${git_commit}"
 ## build the image
-#build_image $GIT_REPO $git_tag $docker_tag
-build_image $docker_tag
+build_image $docker_tag $git_branch $git_commit
+
+# generate our docker tag (latest)
+docker_tag="${tag_name}-latest"
+## build the image
+build_image $docker_tag $git_branch $git_commit
 
 # EOF
