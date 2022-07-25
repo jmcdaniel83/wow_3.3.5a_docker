@@ -10,7 +10,7 @@ ENV TZ=America/Chicago
 ENV DEBIAN_FRONTEND="noninteractive"
 
 # build arguments for the compile
-ARG GIT_REPO=git://github.com/TrinityCore/TrinityCore.git
+ARG GIT_REPO=https://github.com/TrinityCore/TrinityCore.git
 ARG GIT_BRANCH=3.3.5
 ARG GIT_COMMIT=none
 
@@ -131,7 +131,7 @@ RUN set -x \
 FROM ubuntu:20.04 AS instance
 
 # build arguments
-ARG GIT_REPO=git://github.com/TrinityCore/TrinityCore.git
+ARG GIT_REPO=https://github.com/TrinityCore/TrinityCore.git
 ARG GIT_BRANCH=3.3.5
 ARG GIT_COMMIT=none
 
