@@ -5,6 +5,8 @@ wow_client_3.3.5a.7z
 
 # build artifacts
 test-build/
+commit
+commit_history
 
 # code
 code/
