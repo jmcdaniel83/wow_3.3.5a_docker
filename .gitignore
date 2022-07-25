@@ -8,6 +8,9 @@ test-build/
 commit
 commit_history
 
+# changelog files generated
+changelog-*.md
+
 # code
 code/
 
