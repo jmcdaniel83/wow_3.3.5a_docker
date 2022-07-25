@@ -1,4 +1,4 @@
-repo=git://github.com/TrinityCore/TrinityCore.git
+repo=https://github.com/TrinityCore/TrinityCore.git
 branch=3.3.5
 
 # get the latest version number
