@@ -1,11 +1,16 @@
+#!/bin/env python
 # pip3 install requests
 
+import os
 import sys
-from datetime import date
-from datetime import timedelta
-import requests as reqs
 import json
 import urllib.parse
+
+import requests as reqs
+
+from datetime import date
+from datetime import timedelta
+
 
 # At 12:00 on day-of-month 1 and 15.
 # Cron: '0 12 1,15 * *'
@@ -31,8 +36,13 @@ print(f"Calculating changes for {length_days} days...")
 today = date.today()
 last_week = today - timedelta(days = length_days)
 
-#git://github.com/TrinityCore/TrinityCore.git
+# the log file for our changelog
+log_file = os.path.join('changelog', f'changelog-{today}.md')
 
+# make sure that the changelog folder exists
+os.makedirs('changelog', exist_ok=True)
+
+#git://github.com/TrinityCore/TrinityCore.git
 params = {"q" : f"user:TrinityCore repo:server state:closed is:pr merged:>={str(last_week)}"}
 query_string = urllib.parse.urlencode(params)
 request = f"https://api.github.com/search/issues?page=1&per_page=100&{query_string}"
@@ -40,7 +50,7 @@ response = reqs.get(request)
 data = json.loads(response.text)
 
 print(f"Writing to: changelog-{today}.md...")
-with open(f'changelog-{today}.md', 'w') as file:
+with open(log_file, 'w') as file:
     file.write(f"## TrinityCore Changelog ({today})\n")
     for raw_entry in enumerate(data["items"]):
         entry = raw_entry[1]
@@ -50,3 +60,6 @@ with open(f'changelog-{today}.md', 'w') as file:
         patch_url = entry["pull_request"]['patch_url']
         username = entry['user']['login']
         file.write(f"- {title.capitalize()} [[#{number}]({html_url}), [patch]({patch_url})] ({username})\n")
+
+# EOF
+
