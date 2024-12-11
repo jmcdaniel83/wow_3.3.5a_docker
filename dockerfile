@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Build Stage
 # ------------------------------------------------------------------------------
-FROM ubuntu:20.04 as build-stage
+FROM ubuntu:22.04 AS build-stage
 
 WORKDIR /opt
 
@@ -41,7 +41,7 @@ RUN set -x \
    libboost-all-dev \
    libbz2-dev \
    libmariadb-dev-compat \
-   libmariadbclient-dev \
+   libmariadb-dev \
    libncurses-dev \
    libreadline-dev \
    libssl-dev \
@@ -72,15 +72,15 @@ RUN set -x \
 # Extractors Stage
 # ------------------------------------------------------------------------------
 
-FROM ubuntu:20.04 AS extractors
+FROM ubuntu:22.04 AS extractors
 
 # set the timezone in the container
 ENV TZ=America/Chicago
 ENV DEBIAN_FRONTEND="noninteractive"
 
 ENV BASE_DIR=/opt/wow
-ENV CONF_DIR=${SERVER_DIR}/conf
 ENV SERVER_DIR=${BASE_DIR}/server
+ENV CONF_DIR=${SERVER_DIR}/conf
 ENV LOG_DIR=${SERVER_DIR}/log
 ENV DATA_DIR=${SERVER_DIR}/data
 ENV SERVER_BIN_DIR=${SERVER_DIR}/bin
@@ -98,6 +98,7 @@ RUN set -x \
  && apt-get -y install \
    libboost-filesystem-dev \
    libboost-iostreams-dev \
+   libboost-locale-dev \
    libboost-program-options-dev \
    libboost-system-dev \
    libssl-dev \
@@ -128,7 +129,7 @@ RUN set -x \
 # Instance Stage
 # ------------------------------------------------------------------------------
 
-FROM ubuntu:20.04 AS instance
+FROM ubuntu:22.04 AS instance
 
 # build arguments
 ARG GIT_REPO=https://github.com/TrinityCore/TrinityCore.git
@@ -144,8 +145,8 @@ ENV BUILD_DIR=/opt/TrinityCore
 
 # server instance directories
 ENV BASE_DIR=/opt/wow
-ENV CONF_DIR=${SERVER_DIR}/conf
 ENV SERVER_DIR=${BASE_DIR}/server
+ENV CONF_DIR=${SERVER_DIR}/conf
 ENV LOG_DIR=${SERVER_DIR}/log
 ENV DATA_DIR=${SERVER_DIR}/data
 ENV SERVER_BIN_DIR=${SERVER_DIR}/bin
@@ -180,6 +181,7 @@ RUN set -x \
  && apt-get -y install \
    libboost-filesystem-dev \
    libboost-iostreams-dev \
+   libboost-locale-dev \
    libboost-program-options-dev \
    libboost-system-dev \
    libboost-thread-dev\
